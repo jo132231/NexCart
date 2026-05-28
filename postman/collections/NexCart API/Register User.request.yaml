@@ -1,0 +1,26 @@
+$kind: http-request
+name: Register User
+url: "{{base_url}}/auth/register"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Test User\",\r
+
+    \  \"email\": \"test@nexcart.com\",\r
+
+    \  \"password\": \"password123\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "const res = pm.response.json()\r
+
+      \r
+
+      pm.environment.set('access_token', res.data.accessToken)\r
+
+      pm.environment.set('refresh_token', res.data.refreshToken)"
+    language: text/javascript
+order: 1779616184383
