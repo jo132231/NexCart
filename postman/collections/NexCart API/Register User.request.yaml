@@ -8,7 +8,7 @@ body:
 
     \  \"name\": \"Test User\",\r
 
-    \  \"email\": \"test@nexcart.com\",\r
+    \  \"email\": \"test4@nexcart.com\",\r
 
     \  \"password\": \"password123\"\r
 
@@ -19,8 +19,12 @@ scripts:
 
       \r
 
-      pm.environment.set('access_token', res.data.accessToken)\r
+      if (res.data) {\r
 
-      pm.environment.set('refresh_token', res.data.refreshToken)"
+      \    pm.environment.set('access_token', res.data.accessToken)\r
+
+      \    pm.environment.set('refresh_token', res.data.refreshToken)\r
+
+      }"
     language: text/javascript
 order: 1779616184383

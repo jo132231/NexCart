@@ -1,0 +1,12 @@
+$kind: http-request
+name: Log Out
+url: "{{base_url}}/auth/logout"
+method: POST
+body:
+  type: json
+  content: '{ "refreshToken": "{{refresh_token}}" }'
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4426417168005303

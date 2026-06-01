@@ -1,0 +1,16 @@
+$kind: http-request
+name: Login
+url: "{{base_url}}/auth/login"
+method: POST
+body:
+  type: json
+  content: '{ "email": "test@nexcart.com", "password": "password123" }'
+scripts:
+  - type: afterResponse
+    code: "const res = pm.response.json()\r
+
+      pm.environment.set('access_token', res.data.accessToken)\r
+
+      pm.environment.set('refresh_token', res.data.refreshToken)"
+    language: text/javascript
+order: 1389985438966761
