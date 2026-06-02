@@ -4,7 +4,7 @@ url: "{{base_url}}/auth/login"
 method: POST
 body:
   type: json
-  content: '{ "email": "test@nexcart.com", "password": "password123" }'
+  content: '{ "email": "test4@nexcart.com", "password": "password123" }'
 scripts:
   - type: afterResponse
     code: "const res = pm.response.json()\r

@@ -8,6 +8,22 @@ const errorHandler = (err, req, res, next) => {
     method: req.method
   })
 
+  // JWT Invalid Token
+  if (err.name === 'JsonWebTokenError') {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid token'
+    })
+  }
+
+  // JWT Expired Token
+  if (err.name === 'TokenExpiredError') {
+    return res.status(401).json({
+      success: false,
+      message: 'Token expired'
+    })
+  }
+
   const statusCode = err.statusCode || 500
   const message = err.isOperational ? err.message : 'Something went wrong'
 
