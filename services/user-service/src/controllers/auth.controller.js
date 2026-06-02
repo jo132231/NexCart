@@ -1,8 +1,14 @@
 const authService = require('../services/auth.service')
 const { sendSuccess } = require('../../../../shared/responseHelper')
+const { validationResult } = require('express-validator')
+const { AppError } = require('../../../../shared/errorHandler')
 
 const register = async (req, res, next) => {
   try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      throw new AppError('Invalid input data', 400)
+    }
     const { user, accessToken, refreshToken } = await authService.register(req.body)
     sendSuccess(res, { user, accessToken, refreshToken }, 'Registration successful', 201)
   } catch (err) {
@@ -12,6 +18,13 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return next(
+        new AppError(errors.array()[0].msg, 400)
+      )
+    }
     const { user, accessToken, refreshToken } = await authService.login(req.body)
     sendSuccess(res, { user, accessToken, refreshToken }, 'Login successful')
   } catch (err) {
