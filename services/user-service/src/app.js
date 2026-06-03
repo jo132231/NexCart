@@ -7,6 +7,16 @@ const logger = require('../../../shared/logger')
 const { initDB } = require('./config/db')
 const authRoutes = require('./routes/auth.routes')
 
+require('dotenv').config({ path: '../../shared/.env' })
+console.log('JWT_SECRET loaded:', !!process.env.JWT_SECRET)
+
+const path = require("path");
+require("dotenv").config({
+  path: path.resolve(__dirname, "../../shared/.env"),
+  override: true
+});
+
+
 const app = express()
 const PORT = process.env.USER_SERVICE_PORT || 3001
 
