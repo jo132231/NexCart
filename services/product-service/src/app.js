@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../../.env' })
+require('dotenv').config({ path: '../../shared/.env' })
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
@@ -7,6 +7,12 @@ const initStorage = require('./config/initStorage')
 const { errorHandler } = require('../../../shared/errorHandler')
 const logger = require('../../../shared/logger')
 const productRoutes = require('./routes/product.routes')
+
+const path = require("path");
+
+require("dotenv").config({
+  path: path.join(__dirname, "../../shared/.env")
+});
 
 const app = express()
 const PORT = process.env.PRODUCT_SERVICE_PORT || 3002

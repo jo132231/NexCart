@@ -28,6 +28,8 @@ services:
   redis:
     image: redis:7-alpine
     container_name: nexcart-redis
+    ports:
+      - "6379:6379"
     restart: unless-stopped
     volumes:
       - redis_data:/data

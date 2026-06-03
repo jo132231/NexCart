@@ -9,8 +9,38 @@ scripts:
   - type: afterResponse
     code: "const res = pm.response.json()\r
 
-      pm.environment.set('access_token', res.data.accessToken)\r
+      \r
 
-      pm.environment.set('refresh_token', res.data.refreshToken)"
+      // Print full response to console\r
+
+      console.log('Full response:', JSON.stringify(res, null, 2))\r
+
+      console.log('Status:', pm.response.code)\r
+
+      \r
+
+      // Only save tokens if they exist\r
+
+      if (pm.response.code === 200 && res.success) {\r
+
+      \    if (res.data && res.data.accessToken) {\r
+
+      \        pm.environment.set('access_token', res.data.accessToken)\r
+
+      \        pm.environment.set('refresh_token', res.data.refreshToken)\r
+
+      \        console.log('✅ Tokens saved')\r
+
+      \    } else {\r
+
+      \        console.log('❌ No tokens in response. data =', res.data)\r
+
+      \    }\r
+
+      } else {\r
+
+      \    console.log('❌ Login failed. Message =', res.message)\r
+
+      }"
     language: text/javascript
 order: 1389985438966761
