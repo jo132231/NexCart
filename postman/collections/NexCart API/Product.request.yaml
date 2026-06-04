@@ -1,4 +1,58 @@
 $kind: http-request
-url: ""
-method: GET
+name: Product
+url: http://localhost:3002/products
+method: POST
+body:
+  type: formdata
+  content:
+    - type: text
+      key: name
+      value: iPhone 15 Pro
+      description: ""
+      disabled: false
+    - type: text
+      key: description
+      value: Latest Apple flagship with titanium design
+      description: ""
+      disabled: false
+    - type: text
+      key: price
+      value: "999"
+      description: ""
+      disabled: false
+    - type: text
+      key: comparePrice
+      value: "1099"
+      description: ""
+      disabled: false
+    - type: text
+      key: category
+      value: Smartphones
+      description: ""
+      disabled: false
+    - type: text
+      key: brand
+      value: Apple
+      description: ""
+      disabled: false
+    - type: text
+      key: tags
+      value: '["smartphone","apple","5g"]'
+      description: ""
+      disabled: false
+    - type: text
+      key: variants
+      value: '[{"name":"Storage","options":["128GB","256GB","512GB"]},{"name":"Color","options":["Black","White","Gold"]}]'
+      description: ""
+      disabled: false
+    - type: file
+      key: images
+      src:
+        - /C:/Users/Lenovo/OneDrive/Desktop/nexcart/postman/collections/NexCart API/iphone15pro.jpg
+      description: ""
+      disabled: false
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
 order: 4498847917548624

@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get Single Product
+url: http://localhost:3002/products/6a21a32c59ad1ec991aae36b
+method: GET
+order: 4503534268417694
