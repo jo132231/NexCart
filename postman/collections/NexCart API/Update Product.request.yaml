@@ -1,0 +1,17 @@
+$kind: http-request
+name: Update Product
+url: http://localhost:3002/products/6a21a99259ad1ec991aae36f
+method: PUT
+body:
+  type: formdata
+  content:
+    - type: text
+      key: price
+      value: "899"
+      description: ""
+      disabled: false
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4503593863791442

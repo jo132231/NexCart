@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get Categories
+url: http://localhost:3002/products/categories
+method: GET
+order: 4503587037096157

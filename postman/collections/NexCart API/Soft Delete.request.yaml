@@ -1,0 +1,9 @@
+$kind: http-request
+name: Soft Delete
+url: http://localhost:3002/products/6a21a99259ad1ec991aae36f
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4503598772423522
