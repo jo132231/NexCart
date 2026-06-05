@@ -3,7 +3,7 @@ const logger = require('../../../../shared/logger')
 
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
-  port: parseInt(process.env.REDIS_PORT) || 6379,
+  port: parseInt(process.env.REDIS_PORT) || 6399,
   retryStrategy: (times) => {
     if (times > 3) {
       logger.error('Redis connection failed after 3 retries')
