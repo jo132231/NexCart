@@ -4,7 +4,7 @@ const { AppError } = require('../../../../shared/errorHandler')
 
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
-  port: process.env.REDIS_PORT || 6379
+  port: process.env.REDIS_PORT || 6399
 })
 
 const protect = async (req, res, next) => {

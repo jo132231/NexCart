@@ -11,7 +11,7 @@ const getRedis = () => {
   if (!redisClient) {
     redisClient = new Redis({
       host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT) || 6379,
+      port: parseInt(process.env.REDIS_PORT) || 6399,
       lazyConnect: true,
       retryStrategy: (times) => {
         if (times > 3) return null  // stop retrying after 3 attempts
