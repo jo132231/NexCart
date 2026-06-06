@@ -1,0 +1,25 @@
+$kind: http-request
+name: ADD iTEM (logged in user)
+url: http://localhost:3003/cart/items
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0OTU5MTY2ZS1lZDI0LTQ2ZTMtODYxYS0wMDJiNjgxNWYwZTQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3ODA3NDQ4NjYsImV4cCI6MTc4MDc0NTc2Nn0.5eZcnkzZhqhVs04Y1aVQEh9fRyh-I0c0L2sp-cSpttw
+body:
+  type: json
+  content: "{\r
+
+    \  \"productId\": \"6a21a32c59ad1ec991aae36b\",\r
+
+    \  \"name\": \"iPhone 15\",\r
+
+    \  \"price\": 999,\r
+
+    \  \"quantity\": 2\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 3881192753125866

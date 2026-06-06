@@ -1,4 +1,7 @@
-require('dotenv').config({ path: '../../.env' })
+const path = require('path')
+require('dotenv').config({
+  path: path.resolve(__dirname, '../../../shared/.env')
+})
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')

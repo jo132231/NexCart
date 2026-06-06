@@ -18,8 +18,8 @@ const generateTokens = (userId, role) => {
     { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
   )
 
-  console.log(process.env.JWT_ACCESS_SECRET)
-console.log(process.env.JWT_REFRESH_SECRET)
+  console.log(process.env.JWT_SECRET)
+  console.log(process.env.JWT_REFRESH_SECRET)
 
   const refreshToken = jwt.sign(
     { userId },
