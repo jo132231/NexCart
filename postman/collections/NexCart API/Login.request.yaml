@@ -11,35 +11,17 @@ scripts:
 
       \r
 
-      // Print full response to console\r
+      if (res.success && res.data && res.data.accessToken) {\r
 
-      console.log('Full response:', JSON.stringify(res, null, 2))\r
+      \    pm.environment.set('access_token', res.data.accessToken)\r
 
-      console.log('Status:', pm.response.code)\r
+      \    pm.environment.set('refresh_token', res.data.refreshToken)\r
 
-      \r
-
-      // Only save tokens if they exist\r
-
-      if (pm.response.code === 200 && res.success) {\r
-
-      \    if (res.data && res.data.accessToken) {\r
-
-      \        pm.environment.set('access_token', res.data.accessToken)\r
-
-      \        pm.environment.set('refresh_token', res.data.refreshToken)\r
-
-      \        console.log('✅ Tokens saved')\r
-
-      \    } else {\r
-
-      \        console.log('❌ No tokens in response. data =', res.data)\r
-
-      \    }\r
+      \    console.log('✅ Tokens saved')\r
 
       } else {\r
 
-      \    console.log('❌ Login failed. Message =', res.message)\r
+      \    console.log('❌ Failed:', res.message)\r
 
       }"
     language: text/javascript

@@ -19,11 +19,17 @@ scripts:
 
       \r
 
-      if (res.data) {\r
+      if (res.success && res.data && res.data.accessToken) {\r
 
       \    pm.environment.set('access_token', res.data.accessToken)\r
 
       \    pm.environment.set('refresh_token', res.data.refreshToken)\r
+
+      \    console.log('✅ Tokens saved')\r
+
+      } else {\r
+
+      \    console.log('❌ Failed:', res.message)\r
 
       }"
     language: text/javascript

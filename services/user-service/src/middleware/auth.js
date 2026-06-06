@@ -18,8 +18,9 @@ const protect = async (req, res, next) => {
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    console.log(decoded)
     req.user = decoded
-    next()
+    return next()
   } catch (err) {
     next(err)
   }
@@ -27,7 +28,7 @@ const protect = async (req, res, next) => {
 
 const restrictTo = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    if (!req.user || !roles.includes(req.user.role)) {
       return next(new AppError('Not authorized for this action', 403))
     }
     next()
