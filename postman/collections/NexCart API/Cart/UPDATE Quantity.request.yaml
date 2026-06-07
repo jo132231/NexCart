@@ -1,0 +1,14 @@
+$kind: http-request
+name: UPDATE Quantity
+url: http
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r\n  \"quantity\": 3\r\n}"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4095846620950023

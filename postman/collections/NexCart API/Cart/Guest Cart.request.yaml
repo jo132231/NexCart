@@ -1,0 +1,20 @@
+$kind: http-request
+name: Guest Cart
+url: http://localhost:3003/cart/items
+method: POST
+headers:
+  x-guest-id: guest-session-abc123
+body:
+  type: json
+  content: "{\r
+
+    \  \"productId\": \"guest-product-001\",\r
+
+    \  \"name\": \"Guest Product\",\r
+
+    \  \"price\": 49,\r
+
+    \  \"quantity\": 1\r
+
+    }"
+order: 4419553604654218

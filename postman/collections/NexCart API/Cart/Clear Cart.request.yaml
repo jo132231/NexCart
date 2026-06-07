@@ -1,0 +1,9 @@
+$kind: http-request
+name: Clear Cart
+url: http://localhost:3003/cart
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4482533072434848

@@ -1,0 +1,18 @@
+$kind: http-request
+name: Merge Guest Cart on Login
+url: http://localhost:3003/cart/merge
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"guestId\": \"guest-session-abc123\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4433488000180241
