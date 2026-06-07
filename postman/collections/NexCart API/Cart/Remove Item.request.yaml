@@ -1,0 +1,9 @@
+$kind: http-request
+name: Remove Item
+url: http://localhost:3003/cart/items/
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4480820364617625
