@@ -1,0 +1,22 @@
+$kind: http-request
+name: Reserve Stock
+url: http://localhost:3004/inventory/reserve
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"productId\": \"iphone-15-pro\",\r
+
+    \  \"orderId\": \"order-test-001\",\r
+
+    \  \"quantity\": 3\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 3636090241023999

@@ -1,0 +1,5 @@
+$kind: http-request
+name: Check Stock
+url: http://localhost:3004/inventory/iphone-15-pro
+method: GET
+order: 3269550755807231
