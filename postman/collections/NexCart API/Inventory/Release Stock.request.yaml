@@ -1,0 +1,18 @@
+$kind: http-request
+name: Release Stock
+url: http://localhost:3004/inventory/release
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"orderId\": \"order-test-001\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4007848060125183

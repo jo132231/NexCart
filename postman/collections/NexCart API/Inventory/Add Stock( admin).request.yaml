@@ -1,0 +1,21 @@
+$kind: http-request
+name: Add Stock( admin)
+url: http://localhost:3004/inventory/iphone-15-pro
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"productName\": \"iPhone 15 Pro\",\r
+
+    \  \"quantity\": 50,\r
+
+    \  \"lowStockThreshold\": 5\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
