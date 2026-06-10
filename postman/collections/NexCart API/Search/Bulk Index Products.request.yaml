@@ -1,0 +1,142 @@
+$kind: http-request
+name: Bulk Index Products
+url: http://localhost:3007/search/bulk-index
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"products\": [\r
+
+    \    {\r
+
+    \      \"productId\": \"prod-001\",\r
+
+    \      \"name\": \"iPhone 15 Pro\",\r
+
+    \      \"description\": \"Latest Apple flagship with titanium design and A17 chip\",\r
+
+    \      \"category\": \"Electronics\",\r
+
+    \      \"subcategory\": \"Smartphones\",\r
+
+    \      \"brand\": \"Apple\",\r
+
+    \      \"price\": 999,\r
+
+    \      \"comparePrice\": 1099,\r
+
+    \      \"tags\": [\"smartphone\", \"apple\", \"5g\", \"titanium\"],\r
+
+    \      \"isActive\": true,\r
+
+    \      \"ratings\": { \"average\": 4.8, \"count\": 1250 }\r
+
+    \    },\r
+
+    \    {\r
+
+    \      \"productId\": \"prod-002\",\r
+
+    \      \"name\": \"Samsung Galaxy S24\",\r
+
+    \      \"description\": \"Samsung flagship with AI features and 200MP camera\",\r
+
+    \      \"category\": \"Electronics\",\r
+
+    \      \"subcategory\": \"Smartphones\",\r
+
+    \      \"brand\": \"Samsung\",\r
+
+    \      \"price\": 899,\r
+
+    \      \"tags\": [\"smartphone\", \"samsung\", \"android\", \"ai\"],\r
+
+    \      \"isActive\": true,\r
+
+    \      \"ratings\": { \"average\": 4.6, \"count\": 890 }\r
+
+    \    },\r
+
+    \    {\r
+
+    \      \"productId\": \"prod-003\",\r
+
+    \      \"name\": \"Sony WH-1000XM5 Headphones\",\r
+
+    \      \"description\": \"Industry leading noise cancelling wireless headphones\",\r
+
+    \      \"category\": \"Electronics\",\r
+
+    \      \"subcategory\": \"Audio\",\r
+
+    \      \"brand\": \"Sony\",\r
+
+    \      \"price\": 349,\r
+
+    \      \"tags\": [\"headphones\", \"sony\", \"noise-cancelling\", \"wireless\"],\r
+
+    \      \"isActive\": true,\r
+
+    \      \"ratings\": { \"average\": 4.9, \"count\": 3200 }\r
+
+    \    },\r
+
+    \    {\r
+
+    \      \"productId\": \"prod-004\",\r
+
+    \      \"name\": \"Nike Air Max 270\",\r
+
+    \      \"description\": \"Comfortable running shoes with air cushioning technology\",\r
+
+    \      \"category\": \"Fashion\",\r
+
+    \      \"subcategory\": \"Shoes\",\r
+
+    \      \"brand\": \"Nike\",\r
+
+    \      \"price\": 150,\r
+
+    \      \"tags\": [\"shoes\", \"nike\", \"running\", \"sports\"],\r
+
+    \      \"isActive\": true,\r
+
+    \      \"ratings\": { \"average\": 4.5, \"count\": 5600 }\r
+
+    \    },\r
+
+    \    {\r
+
+    \      \"productId\": \"prod-005\",\r
+
+    \      \"name\": \"Apple MacBook Pro 14\",\r
+
+    \      \"description\": \"Professional laptop with M3 Pro chip for developers\",\r
+
+    \      \"category\": \"Electronics\",\r
+
+    \      \"subcategory\": \"Laptops\",\r
+
+    \      \"brand\": \"Apple\",\r
+
+    \      \"price\": 1999,\r
+
+    \      \"tags\": [\"laptop\", \"apple\", \"macbook\", \"developer\"],\r
+
+    \      \"isActive\": true,\r
+
+    \      \"ratings\": { \"average\": 4.9, \"count\": 780 }\r
+
+    \    }\r
+
+    \  ]\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 1781090116886

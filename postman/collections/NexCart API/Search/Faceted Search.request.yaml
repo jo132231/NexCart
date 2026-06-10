@@ -1,0 +1,10 @@
+$kind: http-request
+name: Faceted Search
+url: http://localhost:3007/search?q=electronics&category=Electronics&minPrice=100&maxPrice=1000
+method: GET
+queryParams:
+  q: electronics
+  category: Electronics
+  minPrice: "100"
+  maxPrice: "1000"
+order: 4073904648497959

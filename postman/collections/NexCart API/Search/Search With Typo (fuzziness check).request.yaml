@@ -1,0 +1,7 @@
+$kind: http-request
+name: Search With Typo (fuzziness check)
+url: http://localhost:3007/search?q=iphon
+method: GET
+queryParams:
+  q: iphon
+order: 3674957867295607
