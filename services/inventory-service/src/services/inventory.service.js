@@ -2,6 +2,17 @@ const { pool } = require('../config/db')
 const { AppError } = require('../../../../shared/errorHandler')
 const logger = require('../../../../shared/logger')
 
+const { createProducer, TOPICS, EVENT_TYPES } = require('../../../../shared/kafkaClient')
+
+let kafkaProducer = null
+const getProducer = async () => {
+  if (!kafkaProducer) {
+    const { publish } = await createProducer()
+    kafkaProducer = publish
+  }
+  return kafkaProducer
+}
+
 const getStock = async (productId) => {
   const result = await pool.query(
     `SELECT 
@@ -108,6 +119,39 @@ const reserveStock = async ({ productId, orderId, quantity }) => {
     await client.query('COMMIT')
 
     logger.info(`Stock reserved: ${quantity} units of ${productId} for order ${orderId}`)
+    
+    // Publish stock reserved event
+  try {
+    const publish = await getProducer()
+    await publish(
+      TOPICS.INVENTORY_EVENTS,
+      EVENT_TYPES.STOCK_RESERVED,
+      {
+        productId,
+        orderId,
+        quantity,
+        remainingAvailable: available - quantity
+      },
+      orderId  // partition by orderId — all order events on same partition
+    )
+
+    // Check for low stock
+    if (available - quantity <= stockResult.rows[0].low_stock_threshold) {
+      await publish(
+        TOPICS.INVENTORY_EVENTS,
+        EVENT_TYPES.STOCK_LOW,
+        {
+          productId,
+          productName: stockResult.rows[0].product_name,
+          available: available - quantity,
+          threshold: stockResult.rows[0].low_stock_threshold
+        }
+      )
+      logger.warn(`Low stock alert: ${productId}`)
+    }
+  } catch (err) {
+    logger.error('Failed to publish inventory event:', err.message)
+  }
 
     return {
       reservation: reservation.rows[0],
@@ -163,6 +207,18 @@ const releaseStock = async ({ orderId, productId }) => {
 
     await client.query('COMMIT')
     logger.info(`Stock released for order: ${orderId}`)
+
+    try {
+    const publish = await getProducer()
+    await publish(
+      TOPICS.INVENTORY_EVENTS,
+      EVENT_TYPES.STOCK_RELEASED,
+      { orderId, productId, releasedCount: reservations.rows.length },
+      orderId
+    )
+  } catch (err) {
+    logger.error('Failed to publish stock release event:', err.message)
+  }
 
     return { released: reservations.rows.length }
 

@@ -5,16 +5,70 @@ const { s3Client } = require('../config/storage')
 const { DeleteObjectCommand } = require('@aws-sdk/client-s3')
 const logger = require('../../../../shared/logger')
 
+const { createProducer, TOPICS, EVENT_TYPES } = require('../../../../shared/kafkaClient')
+
+// Producer singleton — created once, reused
+let kafkaProducer = null
+const getProducer = async () => {
+  if (!kafkaProducer) {
+    const { publish } = await createProducer()
+    kafkaProducer = publish
+  }
+  return kafkaProducer
+}
+
+// const createProduct = async (productData, files) => {
+//   // Build images array from uploaded files
+//   const images = files?.map((file, index) => ({
+//     url: file.location,          // MinIO public URL
+//     key: file.key,               // for deletion later
+//     isPrimary: index === 0       // first image is primary
+//   })) || []
+
+//   const product = await Product.create({ ...productData, images })
+//   logger.info(`Product created: ${product._id}`)
+//   return product
+// }
+
 const createProduct = async (productData, files) => {
-  // Build images array from uploaded files
   const images = files?.map((file, index) => ({
-    url: file.location,          // MinIO public URL
-    key: file.key,               // for deletion later
-    isPrimary: index === 0       // first image is primary
+    url: file.location,
+    key: file.key,
+    isPrimary: index === 0
   })) || []
 
   const product = await Product.create({ ...productData, images })
   logger.info(`Product created: ${product._id}`)
+
+  // Publish event to Kafka
+  try {
+    const publish = await getProducer()
+    await publish(
+      TOPICS.PRODUCT_EVENTS,
+      EVENT_TYPES.PRODUCT_CREATED,
+      {
+        productId: product._id.toString(),
+        name: product.name,
+        description: product.description,
+        category: product.category,
+        subcategory: product.subcategory,
+        brand: product.brand,
+        price: product.price,
+        comparePrice: product.comparePrice,
+        tags: product.tags,
+        isActive: product.isActive,
+        ratings: product.ratings,
+        images: product.images,
+        createdAt: product.createdAt
+      },
+      product._id.toString()  // use productId as partition key
+    )
+  } catch (err) {
+    // Never fail the product creation if Kafka is down
+    // The product is saved — Kafka is best-effort here
+    logger.error('Failed to publish product event:', err.message)
+  }
+
   return product
 }
 
@@ -92,6 +146,29 @@ const updateProduct = async (id, updateData, files) => {
     { new: true, runValidators: true }  // return updated doc, run schema validators
   )
 
+  try {
+    const publish = await getProducer()
+    await publish(
+      TOPICS.PRODUCT_EVENTS,
+      EVENT_TYPES.PRODUCT_UPDATED,
+      {
+        productId: updated._id.toString(),
+        name: updated.name,
+        description: updated.description,
+        category: updated.category,
+        brand: updated.brand,
+        price: updated.price,
+        tags: updated.tags,
+        isActive: updated.isActive,
+        ratings: updated.ratings,
+        images: updated.images
+      },
+      updated._id.toString()
+    )
+  } catch (err) {
+    logger.error('Failed to publish product update event:', err.message)
+  }
+
   logger.info(`Product updated: ${id}`)
   return updated
 }
@@ -105,7 +182,21 @@ const deleteProduct = async (id) => {
   logger.info(`Product soft deleted: ${id}`)
 }
 
-const getCategories = async () => {
+try {
+    const publish = await getProducer()
+    await publish(
+      TOPICS.PRODUCT_EVENTS,
+      EVENT_TYPES.PRODUCT_DELETED,
+      { productId: id },
+      id
+    )
+  } catch (err) {
+    logger.error('Failed to publish product delete event:', err.message)
+  }
+
+  logger.info(`Product soft deleted: ${id}`)
+
+  const getCategories = async () => {
   // Aggregate distinct categories with product counts
   const categories = await Product.aggregate([
     { $match: { isDeleted: false, isActive: true } },
