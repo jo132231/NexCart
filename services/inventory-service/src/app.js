@@ -21,8 +21,11 @@ app.get('/health', (req, res) => {
 app.use('/inventory', inventoryRoutes)
 app.use(errorHandler)
 
+const initKafka = require('../../../shared/initKafka')
 const start = async () => {
-  await initDB()
+  await connectDB()
+  await initStorage()
+  await initKafka()     // ← add this line
   app.listen(PORT, () => {
     logger.info(`Inventory service running on port ${PORT}`)
   })

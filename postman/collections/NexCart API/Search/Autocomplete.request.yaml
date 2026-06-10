@@ -1,0 +1,7 @@
+$kind: http-request
+name: Autocomplete
+url: http://localhost:3007/search/autocomplete?q=iph
+method: GET
+queryParams:
+  q: iph
+order: 4500230616325373

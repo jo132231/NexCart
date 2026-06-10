@@ -28,9 +28,11 @@ app.get('/health', (req, res) => {
 app.use('/products', productRoutes)
 app.use(errorHandler)
 
+const initKafka = require('../../../shared/initKafka')
 const start = async () => {
   await connectDB()
   await initStorage()
+  await initKafka()     // ← add this line
   app.listen(PORT, () => {
     logger.info(`Product service running on port ${PORT}`)
   })
