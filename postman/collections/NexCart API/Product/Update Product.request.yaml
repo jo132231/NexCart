@@ -7,7 +7,7 @@ body:
   content:
     - type: text
       key: price
-      value: "899"
+      value: "9999"
       description: ""
       disabled: false
 auth:

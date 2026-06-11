@@ -179,10 +179,8 @@ const deleteProduct = async (id) => {
 
   // Soft delete — just set isDeleted flag
   await Product.findByIdAndUpdate(id, { isDeleted: true, isActive: false })
-  logger.info(`Product soft deleted: ${id}`)
-}
 
-try {
+  try {
     const publish = await getProducer()
     await publish(
       TOPICS.PRODUCT_EVENTS,
@@ -195,19 +193,23 @@ try {
   }
 
   logger.info(`Product soft deleted: ${id}`)
+}
 
-  const getCategories = async () => {
+const getCategories = async () => {
   // Aggregate distinct categories with product counts
   const categories = await Product.aggregate([
     { $match: { isDeleted: false, isActive: true } },
-    { $group: {
-      _id: '$category',
-      subcategories: { $addToSet: '$subcategory' },
-      productCount: { $sum: 1 },
-      avgPrice: { $avg: '$price' }
-    }},
+    {
+      $group: {
+        _id: '$category',
+        subcategories: { $addToSet: '$subcategory' },
+        productCount: { $sum: 1 },
+        avgPrice: { $avg: '$price' }
+      }
+    },
     { $sort: { productCount: -1 } }
   ])
+
   return categories
 }
 
