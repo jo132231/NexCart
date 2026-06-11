@@ -1,5 +1,6 @@
 require('dotenv').config({ path: '../../shared/.env' })
 // require('dotenv').config({ path: '../../.env' })
+
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
@@ -18,7 +19,11 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'search-service', timestamp: new Date() })
+  res.json({
+    status: 'ok',
+    service: 'search-service',
+    timestamp: new Date()
+  })
 })
 
 app.use('/search', searchRoutes)
@@ -47,8 +52,8 @@ const startKafkaConsumer = async () => {
   }
 
   await createConsumer(
-    'search-service-group',      // consumer group ID
-    [TOPICS.PRODUCT_EVENTS],     // topics to subscribe to
+    'search-service-group',
+    [TOPICS.PRODUCT_EVENTS],
     handlers,
     { maxRetries: 3 }
   )
@@ -56,13 +61,18 @@ const startKafkaConsumer = async () => {
   logger.info('Search service Kafka consumer started')
 }
 
-const initKafka = require('../../../shared/initKafka')
+// ─── STARTUP ───────────────────────────────────────────────────────
 const start = async () => {
-  await connectDB()
-  await initStorage()
-  await initKafka()     // ← add this line
+  await initIndex()
+
+  // Start Kafka consumer without blocking the HTTP server
+  startKafkaConsumer().catch(err => {
+    logger.error('Kafka consumer failed:', err.message)
+  })
+
   app.listen(PORT, () => {
     logger.info(`Search service running on port ${PORT}`)
   })
 }
+
 start()

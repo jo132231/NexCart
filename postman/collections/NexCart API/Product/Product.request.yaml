@@ -48,7 +48,7 @@ body:
     - type: file
       key: images
       src:
-        - /C:/Users/Lenovo/OneDrive/Desktop/nexcart/postman/collections/NexCart API/iphone15pro.jpg
+        - /C:/Users/Lenovo/OneDrive/Desktop/nexcart/assets/iphone15pro.jpg
       description: ""
       disabled: false
 auth:
