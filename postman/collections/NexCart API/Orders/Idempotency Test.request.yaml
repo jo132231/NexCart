@@ -1,0 +1,15 @@
+$kind: http-request
+name: Idempotency Test
+url: http://localhost:3005/orders
+method: POST
+headers:
+  Idempotency-Key: order-test-001
+  Content-Type: application/json
+body:
+  type: json
+  content: ""
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 1440645705541618

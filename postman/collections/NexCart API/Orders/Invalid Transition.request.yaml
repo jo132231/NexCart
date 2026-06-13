@@ -1,0 +1,18 @@
+$kind: http-request
+name: Invalid Transition
+url: http://localhost:3005/orders/{{order_id}}/cancel
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"reason\": \"Changed my mind\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4174830596876439

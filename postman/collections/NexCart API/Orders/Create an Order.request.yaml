@@ -1,0 +1,49 @@
+$kind: http-request
+name: Create an Order
+url: http://localhost:3005/orders
+method: POST
+headers:
+  idempotency-Key: order-test-002
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"items\": [\r
+
+    \    {\r
+
+    \      \"productId\": \"prod-002\",\r
+
+    \      \"name\": \"iPhone 15\",\r
+
+    \      \"price\": 1999,\r
+
+    \      \"quantity\": 1\r
+
+    \    }\r
+
+    \  ],\r
+
+    \  \"shippingAddress\": {\r
+
+    \    \"street\": \"123 Main Street\",\r
+
+    \    \"city\": \"Riyadh\",\r
+
+    \    \"state\": \"Eastern Province\",\r
+
+    \    \"country\": \"Saudi Arabia\",\r
+
+    \    \"zipCode\": \"12345\"\r
+
+    \  },\r
+
+    \  \"notes\": \"Please leave at door\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 1781295201000

@@ -1,2 +1,7 @@
 $kind: collection
 name: NexCart API
+variables:
+  - key: json_web_token_1bc9
+    secret: true
+  - key: supabase_service_role_api_key_1bc9
+    secret: true
