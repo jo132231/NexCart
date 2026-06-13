@@ -1,0 +1,14 @@
+$kind: http-request
+name: Cancel order
+url: http://localhost:3005/orders/9392ed21-12e6-4e7a-81dc-ac91eddea041/cancel
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: '{ "reason": "Changed my mind" }'
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4080934605137130

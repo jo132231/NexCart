@@ -3,6 +3,10 @@ values:
   - key: base_url
     value: ''
   - key: access_token
-    value: ''
+    secret: true
   - key: refresh_token
+    secret: true
+  - key: order_id
+    value: ''
+  - key: new_order_id
     value: ''

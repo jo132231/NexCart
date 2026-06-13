@@ -1,0 +1,14 @@
+$kind: http-request
+name: Admin Route Protection
+url: http://localhost:3005/orders/{{new_order_id}}/status
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r\n  \"status\": \"confirmed\"\r\n}"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4233059614585920

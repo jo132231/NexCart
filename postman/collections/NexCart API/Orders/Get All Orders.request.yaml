@@ -1,9 +1,9 @@
 $kind: http-request
-name: Get Me
-url: "{{base_url}}/auth/me"
+name: Get All Orders
+url: http://localhost:3005/orders
 method: GET
 auth:
   type: bearer
   credentials:
     token: "{{access_token}}"
-order: 1501777797772458
+order: 1842209133132008

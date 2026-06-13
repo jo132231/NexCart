@@ -9,6 +9,10 @@ scripts:
   - type: afterResponse
     code: "const res = pm.response.json()\r
 
+      // pm.environment.set(\"access_token\", res.data.access_token);\r
+
+      // console.log(\"Saved token:\", pm.environment.get(\"access_token\"));\r
+
       \r
 
       if (res.success && res.data && res.data.accessToken) {\r
