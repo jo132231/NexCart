@@ -1,0 +1,14 @@
+$kind: http-request
+name: Process a Refund(admin)
+url: http://localhost:3006/payments/{{order_id}}/refund
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: '{ "amount": 999 }'
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 2921545375800561

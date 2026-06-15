@@ -1,0 +1,9 @@
+$kind: http-request
+name: Verify order status changed
+url: http://localhost:3005/orders/<orderId>
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 1483559562759711
