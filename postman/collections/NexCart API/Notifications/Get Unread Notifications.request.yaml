@@ -1,0 +1,9 @@
+$kind: http-request
+name: Get Unread Notifications
+url: http://localhost:3008/notifications
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 1781639373166

@@ -10,3 +10,5 @@ values:
     value: ''
   - key: new_order_id
     value: ''
+  - key: notification_id
+    value: ''

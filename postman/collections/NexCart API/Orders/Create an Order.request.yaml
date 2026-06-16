@@ -3,15 +3,15 @@ name: Create an Order
 url: http://localhost:3005/orders
 method: POST
 headers:
-  idempotency-Key: saga-test-001
+  idempotency-Key: saga-test-004
   Content-Type: application/json
 body:
   type: json
   content: "{\r
 
-    \  \"items\": [{ \"productId\": \"prod-001\", \"name\": \"iPhone 15 Pro\", \"price\": 999, \"quantity\": 1 }],\r
+    \  \"items\": [{ \"productId\": \"prod-004\", \"name\": \"Apple Macbook Air\", \"price\": 10999, \"quantity\": 1 }],\r
 
-    \  \"shippingAddress\": { \"street\": \"123 Main St\", \"city\": \"Riyadh\", \"country\": \"Saudi Arabia\" }\r
+    \  \"shippingAddress\": { \"street\": \"123 Main St\", \"city\": \"Dammam\", \"country\": \"Saudi Arabia\" }\r
 
     }"
 auth:
