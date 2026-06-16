@@ -1,0 +1,9 @@
+$kind: http-request
+name: Mark as read
+url: http://localhost:3008/notifications/</read
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 3118457523524864

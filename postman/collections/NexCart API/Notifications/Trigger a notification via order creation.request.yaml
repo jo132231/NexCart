@@ -1,0 +1,9 @@
+$kind: http-request
+name: Trigger a notification via order creation
+url: http://localhost:3008/notifications
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 737493163927312
