@@ -1,0 +1,16 @@
+$kind: http-request
+name: Auth through gateway
+url: http://localhost:8080/api/auth/login
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\": \"test@nexcart.com\",\r
+
+    \  \"password\": \"password123\"\r
+
+    }"
+order: 1423990933905456
