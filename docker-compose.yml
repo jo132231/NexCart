@@ -78,9 +78,26 @@ services:
     volumes:
       - minio_data:/data
 
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: nexcart-gateway
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - redis
+      - postgres
+      - mongodb
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   mongo_data:
   redis_data:
   minio_data:
   es_data:
+
+
