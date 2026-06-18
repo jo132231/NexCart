@@ -93,6 +93,17 @@ services:
       - mongodb
     restart: unless-stopped
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: nexcart-jaeger
+    ports:
+      - "16686:16686"   # Jaeger UI
+      - "6831:6831/udp" # Jaeger agent (receives traces)
+      - "4318:4318"     # OTLP HTTP
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   mongo_data:
