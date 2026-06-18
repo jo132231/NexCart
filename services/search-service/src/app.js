@@ -1,23 +1,45 @@
+const { initTracing } = require('../../../shared/tracing')
+initTracing('search-service')
 require('dotenv').config({ path: '../../shared/.env' })
 // require('dotenv').config({ path: '../../.env' })
-
+const correlationMiddleware = require('../../shared/correlationMiddleware')
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const { errorHandler } = require('../../../shared/errorHandler')
-const logger = require('../../../shared/logger')
+const { logger } = require('../../../../shared/logger')
 const { initIndex } = require('./config/elasticsearch')
 const { createConsumer, TOPICS, EVENT_TYPES } = require('../../../shared/kafkaClient')
 const searchService = require('./services/search.service')
 const searchRoutes = require('./routes/search.routes')
+const client = require('./config/elasticsearch')
 
+app.get('/ready', async (req, res) => {
+  const checks = {}
+
+  try {
+    await client.ping()
+    checks.elasticsearch = 'ok'
+  } catch {
+    checks.elasticsearch = 'error'
+  }
+
+  const allHealthy =
+    Object.values(checks).every(v => v === 'ok')
+
+  res.status(allHealthy ? 200 : 503).json({
+    status: allHealthy ? 'ready' : 'not_ready',
+    checks,
+    timestamp: new Date()
+  })
+})
 const app = express()
 const PORT = process.env.SEARCH_SERVICE_PORT || 3007
 
 app.use(helmet())
 app.use(cors())
 app.use(express.json())
-
+app.use(correlationMiddleware)
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',

@@ -1,11 +1,14 @@
+const { initTracing } = require('../../../shared/tracing')
+initTracing('product-service')
 require('dotenv').config({ path: '../../shared/.env' })
+const correlationMiddleware = require('../../shared/correlationMiddleware')
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const connectDB = require('./config/db')
 const initStorage = require('./config/initStorage')
 const { errorHandler } = require('../../../shared/errorHandler')
-const logger = require('../../../shared/logger')
+const { logger } = require('../../../../shared/logger')
 const productRoutes = require('./routes/product.routes')
 
 const path = require("path");
@@ -20,7 +23,7 @@ const PORT = process.env.PRODUCT_SERVICE_PORT || 3002
 app.use(helmet())
 app.use(cors())
 app.use(express.json())
-
+app.use(correlationMiddleware)
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'product-service', timestamp: new Date() })
 })
