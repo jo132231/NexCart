@@ -1,5 +1,5 @@
 const Redis = require('ioredis')
-const logger = require('../../../../shared/logger')
+const { logger } = require('../../../../shared/logger')
 
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',

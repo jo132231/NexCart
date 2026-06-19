@@ -1,20 +1,20 @@
 const { initTracing } = require('../../../shared/tracing')
 initTracing('product-service')
-require('dotenv').config({ path: '../../shared/.env' })
-const correlationMiddleware = require('../../shared/correlationMiddleware')
+require('dotenv').config({ path: '../../../shared/.env' })
+const correlationMiddleware = require('../../../shared/correlationMiddleware')
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const connectDB = require('./config/db')
 const initStorage = require('./config/initStorage')
 const { errorHandler } = require('../../../shared/errorHandler')
-const { logger } = require('../../../../shared/logger')
+const { logger } = require('../../../shared/logger')
 const productRoutes = require('./routes/product.routes')
 
 const path = require("path");
 
 require("dotenv").config({
-  path: path.join(__dirname, "../../shared/.env")
+  path: path.join(__dirname, "../../../shared/.env")
 });
 
 const app = express()

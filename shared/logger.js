@@ -1,8 +1,7 @@
 const { createLogger, format, transports } = require('winston')
 const { AsyncLocalStorage } = require('async_hooks')
+const { ElasticsearchTransport } = require('winston-elasticsearch')
 
-// AsyncLocalStorage stores the correlation ID for the current async context
-// This means you don't have to pass it manually through every function
 const asyncLocalStorage = new AsyncLocalStorage()
 
 const logger = createLogger({
@@ -11,7 +10,6 @@ const logger = createLogger({
     format.timestamp(),
     format.errors({ stack: true }),
     format.json(),
-    // Add correlation ID to every log line automatically
     format((info) => {
       const store = asyncLocalStorage.getStore()
       if (store?.correlationId) {
@@ -36,25 +34,36 @@ const logger = createLogger({
           return `${timestamp} ${level} [${service}]${cid}: ${message}${metaStr}`
         })
       )
-    })
+    }),
+    // Conditionally add Elasticsearch transport — only if URL is configured
+    ...(process.env.ELASTICSEARCH_URL ? [
+      new ElasticsearchTransport({
+        level: 'info',
+        clientOpts: { node: process.env.ELASTICSEARCH_URL },
+        index: `nexcart-logs-${new Date().toISOString().slice(0, 7)}`,
+        transformer: (logData) => ({
+          '@timestamp': logData.timestamp || new Date().toISOString(),
+          severity: logData.level,
+          message: logData.message,
+          service: logData.meta?.service,
+          correlationId: logData.meta?.correlationId,
+          environment: logData.meta?.environment,
+          ...logData.meta
+        })
+      })
+    ] : [])
   ]
 })
 
-// Run a function with a correlation ID bound to its async context
 const withCorrelationId = (correlationId, fn) => {
   return asyncLocalStorage.run({ correlationId }, fn)
 }
 
-// Get current correlation ID from async context
 const getCorrelationId = () => {
   return asyncLocalStorage.getStore()?.correlationId
 }
 
 module.exports = { logger, withCorrelationId, getCorrelationId }
-
-
-
-
 
 
 // const { createLogger, format, transports } = require('winston')

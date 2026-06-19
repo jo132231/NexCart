@@ -1,14 +1,21 @@
 const { initTracing } = require('../../../shared/tracing')
 initTracing('inventory-service')
 require('dotenv').config({ path: '../../shared/.env' })
-const correlationMiddleware = require('../../shared/correlationMiddleware')
+const correlationMiddleware = require('../../../shared/correlationMiddleware')
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const { errorHandler } = require('../../../shared/errorHandler')
-const { logger } = require('../../../../shared/logger')
+const { logger } = require('../../../shared/logger')
 const { initDB } = require('./config/db')
 const inventoryRoutes = require('./routes/inventory.routes')
+const app = express()
+const PORT = process.env.INVENTORY_SERVICE_PORT || 3004
+
+app.use(helmet())
+app.use(cors())
+app.use(express.json())
+app.use(correlationMiddleware)
 
 // Liveness probe — is the process alive?
 // Health check is repeated in thE files PAYMENT, USER, INVENTORY and ORDER
@@ -19,6 +26,9 @@ app.get('/health', (req, res) => {
     timestamp: new Date(),
     uptime: process.uptime()
   })
+})
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', service: 'inventory-service', timestamp: new Date() })
 })
 
 // Readiness probe — is the service ready for traffic?
@@ -40,17 +50,6 @@ app.get('/ready', async (req, res) => {
     checks,
     timestamp: new Date()
   })
-})
-
-const app = express()
-const PORT = process.env.INVENTORY_SERVICE_PORT || 3004
-
-app.use(helmet())
-app.use(cors())
-app.use(express.json())
-app.use(correlationMiddleware)
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'inventory-service', timestamp: new Date() })
 })
 
 app.use('/inventory', inventoryRoutes)

@@ -1,5 +1,5 @@
 const { Kafka, Partitioners, logLevel } = require('kafkajs')
-const logger = require('./logger')
+const { logger, withCorrelationId, getCorrelationId } = require('./logger')
 
 const kafka = new Kafka({
   clientId: process.env.SERVICE_NAME || 'nexcart',
@@ -101,6 +101,7 @@ const createProducer = async () => {
       eventId: generateEventId(),
       timestamp: new Date().toISOString(),
       service: process.env.SERVICE_NAME || 'nexcart',
+      correlationId: getCorrelationId() || null,
       data
     }
 
@@ -111,7 +112,8 @@ const createProducer = async () => {
         value: JSON.stringify(message),
         headers: {
           eventType,
-          timestamp: message.timestamp
+          timestamp: message.timestamp,
+          correlationId: message.correlationId || ''
         }
       }]
     })
@@ -143,16 +145,24 @@ const createConsumer = async (groupId, topics, handlers, options = {}) => {
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
       let event
-      let attempts = 0
 
       try {
         event = JSON.parse(message.value.toString())
+      } catch (parseError) {
+        logger.error('Failed to parse Kafka message:', parseError.message)
+        return
+      }
+
+      // Bind correlation ID from the event for all downstream logs
+      await withCorrelationId(event.correlationId || generateEventId(), async () => {
         const handler = handlers[event.eventType]
 
         if (!handler) {
           logger.info(`No handler for event: ${event.eventType}`)
           return
         }
+
+        let attempts = 0
 
         while (attempts < maxRetries) {
           try {
@@ -169,27 +179,18 @@ const createConsumer = async (groupId, topics, handlers, options = {}) => {
           }
         }
 
-        logger.error(`Moving to DLQ: ${event.eventType}`)
-
-        // FIX: use publish, not producer.publish
+        // All retries exhausted — move to dead letter queue
+        logger.error(`Moving to DLQ after ${maxRetries} failures: ${event.eventType}`)
         await dlqProducer.publish(
           `${topic}-dlq`,
           'dlq.message',
-          {
-            originalEvent: event,
-            topic,
-            partition,
-            error: 'Max retries exceeded'
-          }
+          { originalEvent: event, topic, partition, error: 'Max retries exceeded' }
         )
-
-      } catch (parseError) {
-        logger.error('Failed to parse Kafka message:', parseError.message)
-      }
+      })
     }
   })
 
-  logger.info(`Kafka consumer started: ${groupId}`)
+  logger.info(`Kafka consumer started: group=${groupId}, topics=${topics.join(', ')}`)
   return consumer
 }
 

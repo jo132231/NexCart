@@ -1,13 +1,14 @@
 const { initTracing } = require('../../../shared/tracing')
 initTracing('notification-service')
 require('dotenv').config({ path: '../../shared/.env' })
-const correlationMiddleware = require('../../shared/correlationMiddleware')
+const correlationMiddleware = require('../../../shared/correlationMiddleware')
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const { errorHandler } = require('../../../shared/errorHandler')
-const { logger } = require('../../../../shared/logger')
+const { logger } = require('../../../shared/logger')
 const { initDB } = require('./config/db')
+const { pool } = require('./config/db')
 const initKafka = require('../../../shared/initKafka')
 const { startConsumer } = require('./services/consumer.service')
 const notificationRoutes = require('./routes/notification.routes')
@@ -22,7 +23,25 @@ app.use(correlationMiddleware)
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'notification-service', timestamp: new Date() })
 })
+app.get('/ready', async (req, res) => {
+  const checks = {}
 
+  try {
+    await pool.query('SELECT 1')
+    checks.postgres = 'ok'
+  } catch (err) {
+    checks.postgres = 'error'
+  }
+
+  const allHealthy =
+    Object.values(checks).every(v => v === 'ok')
+
+  res.status(allHealthy ? 200 : 503).json({
+    status: allHealthy ? 'ready' : 'not_ready',
+    checks,
+    timestamp: new Date()
+  })
+})
 app.use('/notifications', notificationRoutes)
 app.use(errorHandler)
 
