@@ -1,5 +1,5 @@
 const { Pool } = require('pg')
-const logger = require('../../../../shared/logger')
+const { logger } = require('../../../../shared/logger')
 
 const pool = new Pool({
   host: process.env.POSTGRES_HOST || 'localhost',

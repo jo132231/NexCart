@@ -1,21 +1,35 @@
+const path = require('path')
 const { initTracing } = require('../../../shared/tracing')
 initTracing('user-service')
-require('dotenv').config({ path: '../../shared/.env' })
-const correlationMiddleware = require('../../shared/correlationMiddleware')
+
+require('dotenv').config({
+  path: path.resolve(__dirname, '../../shared/.env'),
+  override: true
+})
+
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const { errorHandler } = require('../../../shared/errorHandler')
-const { logger } = require('../../../../shared/logger')
-const { initDB } = require('./config/db')
+const { logger } = require('../../../shared/logger')
+const correlationMiddleware = require('../../../shared/correlationMiddleware')
+const { initDB, pool } = require('./config/db')
 const authRoutes = require('./routes/auth.routes')
 
+const app = express()
+const PORT = process.env.USER_SERVICE_PORT || 3001
+
+// Security middleware
+app.use(helmet())
+app.use(cors())
+app.use(express.json())
+app.use(correlationMiddleware)
+
 // Liveness probe — is the process alive?
-// Health check is repeated in thE files PAYMENT, USER, INVENTORY and ORDER
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
-    service: process.env.SERVICE_NAME,
+    service: 'user-service',
     timestamp: new Date(),
     uptime: process.uptime()
   })
@@ -25,7 +39,6 @@ app.get('/health', (req, res) => {
 app.get('/ready', async (req, res) => {
   const checks = {}
 
-  // Check PostgreSQL (for services that use it)
   try {
     await pool.query('SELECT 1')
     checks.postgres = 'ok'
@@ -40,29 +53,6 @@ app.get('/ready', async (req, res) => {
     checks,
     timestamp: new Date()
   })
-})
-
-require('dotenv').config({ path: '../../shared/.env' })
-console.log('JWT_SECRET loaded:', !!process.env.JWT_SECRET)
-
-const path = require("path");
-require("dotenv").config({
-  path: path.resolve(__dirname, "../../shared/.env"),
-  override: true
-});
-
-
-const app = express()
-const PORT = process.env.USER_SERVICE_PORT || 3001
-
-// Security middleware
-app.use(helmet())
-app.use(cors())
-app.use(express.json())
-app.use(correlationMiddleware)
-// Health check — Kubernetes needs this
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'user-service', timestamp: new Date() })
 })
 
 // Routes

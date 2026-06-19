@@ -3,7 +3,7 @@ const Product = require('../models/product.model')
 const { AppError } = require('../../../../shared/errorHandler')
 const { s3Client } = require('../config/storage')
 const { DeleteObjectCommand } = require('@aws-sdk/client-s3')
-const logger = require('../../../../shared/logger')
+
 
 const { createProducer, TOPICS, EVENT_TYPES } = require('../../../../shared/kafkaClient')
 
@@ -16,19 +16,6 @@ const getProducer = async () => {
   }
   return kafkaProducer
 }
-
-// const createProduct = async (productData, files) => {
-//   // Build images array from uploaded files
-//   const images = files?.map((file, index) => ({
-//     url: file.location,          // MinIO public URL
-//     key: file.key,               // for deletion later
-//     isPrimary: index === 0       // first image is primary
-//   })) || []
-
-//   const product = await Product.create({ ...productData, images })
-//   logger.info(`Product created: ${product._id}`)
-//   return product
-// }
 
 const createProduct = async (productData, files) => {
   const images = files?.map((file, index) => ({

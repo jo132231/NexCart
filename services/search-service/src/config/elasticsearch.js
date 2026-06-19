@@ -1,5 +1,5 @@
 const { Client } = require('@elastic/elasticsearch')
-const logger = require('../../../../shared/logger')
+const { logger } = require('../../../../shared/logger')
 
 const client = new Client({
   node: process.env.ELASTICSEARCH_URL || 'http://localhost:9200',

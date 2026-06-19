@@ -13,6 +13,7 @@ const s3Client = new S3Client({
     secretAccessKey: process.env.MINIO_ROOT_PASSWORD || 'nexcart123'
   },
   forcePathStyle: true  // required for MinIO
+  
 })
 
 const upload = multer({
