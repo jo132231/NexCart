@@ -1,0 +1,21 @@
+$kind: http-request
+name: Correlation ID flows through gateway
+url: http://localhost:8080/api/orders
+method: POST
+headers:
+  X-Correlation-ID: my-test-trace-001
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"items\": [{\"productId\":\"prod-001\",\"name\":\"iPhone\",\"price\":999,\"quantity\":1}],\r
+
+    \  \"shippingAddress\": {\"street\":\"123 Main\",\"city\":\"Riyadh\",\"country\":\"Saudi Arabia\"}\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 1782072592603

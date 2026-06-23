@@ -50,7 +50,7 @@ const start = async () => {
   await initKafka()
 
   startConsumer().catch(err => {
-    logger.error('Notification consumer failed:', err.message)
+    console.error('Notification consumer failed:', err)
   })
 
   app.listen(PORT, () => {
