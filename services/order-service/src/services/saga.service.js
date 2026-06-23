@@ -1,6 +1,6 @@
 const { updateOrderStatus } = require('./order.service')
 const { createConsumer, TOPICS, EVENT_TYPES } = require('../../../../shared/kafkaClient')
-const logger = require('../../../../shared/logger')
+const { logger } = require('../../../../shared/logger')
 
 // These are the compensating transaction handlers
 // They run when something in the saga fails

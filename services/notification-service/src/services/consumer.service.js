@@ -1,6 +1,6 @@
 const { createConsumer, TOPICS, EVENT_TYPES } = require('../../../../shared/kafkaClient')
 const { sendEmail, sendInApp } = require('./notification.service')
-const logger = require('../../../../shared/logger')
+const { logger } = require('../../../../shared/logger')
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@nexcart.com'
 
