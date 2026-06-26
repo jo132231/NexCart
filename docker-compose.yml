@@ -13,6 +13,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+    - nexcart-network
 
   mongodb:
     image: mongo:6
@@ -24,6 +26,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    networks:
+    - nexcart-network
 
   redis:
     image: redis:7-alpine
@@ -33,6 +37,8 @@ services:
     restart: unless-stopped
     volumes:
       - redis_data:/data
+    networks:
+    - nexcart-network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
@@ -40,6 +46,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+    - nexcart-network
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
@@ -53,6 +61,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: nexcart-zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+    - nexcart-network
 
   elasticsearch:
     image: elasticsearch:8.8.0
@@ -65,6 +75,8 @@ services:
       - "9200:9200"
     volumes:
       - es_data:/usr/share/elasticsearch/data
+    networks:
+    - nexcart-network
   minio:
     image: minio/minio:latest
     container_name: nexcart-minio
@@ -77,6 +89,8 @@ services:
       - "9001:9001"
     volumes:
       - minio_data:/data
+    networks:
+    - nexcart-network
 
   gateway:
     build:
@@ -92,6 +106,8 @@ services:
       - postgres
       - mongodb
     restart: unless-stopped
+    networks:
+    - nexcart-network
 
   jaeger:
     image: jaegertracing/all-in-one:latest
@@ -103,6 +119,153 @@ services:
     environment:
       - COLLECTOR_OTLP_ENABLED=true
     restart: unless-stopped
+    networks:
+    - nexcart-network
+
+  user-service:
+    build:
+      context: .
+      dockerfile: services/user-service/Dockerfile
+    container_name: nexcart-user-service
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=user-service
+    env_file:
+    - ./shared/.env
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    networks:
+      - nexcart-network
+
+  product-service:
+    build:
+      context: .
+      dockerfile: services/product-service/Dockerfile
+    container_name: nexcart-product-service
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - SERVICE_NAME=product-service
+    env_file:
+      - ./shared/.env
+    depends_on:
+      - mongodb
+      - kafka
+    restart: unless-stopped
+    networks:
+      - nexcart-network
+
+  cart-service:
+    build:
+      context: .
+      dockerfile: services/cart-service/Dockerfile
+    container_name: nexcart-cart-service
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./shared/.env
+    environment:
+      - SERVICE_NAME=cart-service
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - nexcart-network
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: services/inventory-service/Dockerfile
+    container_name: nexcart-inventory-service
+    ports:
+      - "3004:3004"
+    env_file:
+      - ./shared/.env
+    environment:
+      - SERVICE_NAME=inventory-service
+    depends_on:
+      - postgres
+      - kafka
+    restart: unless-stopped
+    networks:
+      - nexcart-network
+
+  order-service:
+    build:
+      context: .
+      dockerfile: services/order-service/Dockerfile
+    container_name: nexcart-order-service
+    ports:
+      - "3005:3005"
+    env_file:
+      - ./shared/.env
+    environment:
+      - SERVICE_NAME=order-service
+    depends_on:
+      - postgres
+      - kafka
+    restart: unless-stopped
+    networks:
+      - nexcart-network
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: services/payment-service/Dockerfile
+    container_name: nexcart-payment-service
+    ports:
+      - "3006:3006"
+    env_file:
+      - ./shared/.env
+    environment:
+      - SERVICE_NAME=payment-service
+    depends_on:
+      - postgres
+      - kafka
+    restart: unless-stopped
+    networks:
+      - nexcart-network
+
+  search-service:
+    build:
+      context: .
+      dockerfile: services/search-service/Dockerfile
+    container_name: nexcart-search-service
+    ports:
+      - "3007:3007"
+    env_file:
+      - ./shared/.env
+    environment:
+      - SERVICE_NAME=search-service
+    depends_on:
+      - elasticsearch
+      - kafka
+    restart: unless-stopped
+    networks:
+      - nexcart-network
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: services/notification-service/Dockerfile
+    container_name: nexcart-notification-service
+    ports:
+      - "3008:3008"
+    env_file:
+      - ./shared/.env
+    environment:
+      - SERVICE_NAME=notification-service
+    depends_on:
+      - postgres
+      - kafka
+    restart: unless-stopped
+    networks:
+      - nexcart-network
 
 volumes:
   postgres_data:
@@ -111,4 +274,6 @@ volumes:
   minio_data:
   es_data:
 
-
+networks:
+  nexcart-network:
+    driver: bridge
